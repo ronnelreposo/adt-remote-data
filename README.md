@@ -35,13 +35,17 @@ npm install adt-remote-data@1.0.0
 #### Methods
 
 ##### fold
+**Alias:** `cata`
 `fold` takes four functions `onNotAsked`, `onLoading`, `onFailure`, `onSuccess` and `RemoteData` you want to reduce, This functions will be invoked upon the variant of the input `RemoteData`.
 
 ##### map
 `map` takes a function and a `RemoteData`. The transformer function takes a value and returns a transformed value. The value to the function will be supplied on **success** variant in `RemoteData`.
 
+##### bimap
+`bimap` takes two function `onError` and `onSuccess` and performs dual transformation of `RemoteData`.
+
 ##### bind
-**Alias:** `andThen`
+**Alias:** `andThen`, `flatMap`
 
 `bind` takes a function that takes a value and returns a `RemoteData`. The value to the function will be supplied on **success** variant in `RemoteData` your binding to.
 
