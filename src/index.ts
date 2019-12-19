@@ -15,6 +15,10 @@ export const failure = <E, A>(value: E): RemoteData<E, A> => ({ type: "Failure",
 
 export const success = <E, A>(value: A): RemoteData<E, A> => ({ type: "Success", value })
 
+/**
+ * fold takes four functions `onNotAsked`, `onLoading`, `onFailure`, `onSuccess` and `RemoteData` you want to reduce, This functions will be invoked upon the variant of the input `RemoteData`.
+ * @param handlers 
+ */
 export const fold = <E, A, R>(handlers: {
     onNotAsked: () => R;
     onLoading: () => R;
@@ -31,6 +35,15 @@ export const fold = <E, A, R>(handlers: {
         ;
     }
 
+/**
+ * Function alias of fold.
+ */
+export const cata = fold;
+
+/**
+ * map takes a function and a `RemoteData`. The transformer function takes a value and returns a transformed value. The value to the function will be supplied on **success** variant in `RemoteData`.
+ * @param f - transformer function.
+ */
 export const map = <E, A, B>(f: (a: A) => B) =>
     fold<E, A, RemoteData<E, B>>({
         onNotAsked: notAsked,
@@ -39,6 +52,25 @@ export const map = <E, A, B>(f: (a: A) => B) =>
         onSuccess: value => success(f(value))
     });
 
+/**
+ * bimap takes two function `onError` and `onSuccess` and performs dual transformation of `RemoteData`.
+ * @param onError 
+ * @param onSuccess 
+ */
+export const bimap = <E, F, A, B>(
+    onError: (e: E) => F,
+    onSuccess: (a: A) => B) =>
+    fold<E, A, RemoteData<F, B>>({
+        onNotAsked: notAsked,
+        onLoading: loading,
+        onFailure: value => failure(onError(value)),
+        onSuccess: value => success(onSuccess(value))
+    });
+
+/**
+ * bind takes a function that takes a value and returns a `RemoteData`. The value to the function will be supplied on **success** variant in `RemoteData` your binding to.
+ * @param f - bind function. 
+ */
 export const bind = <E, A, B>(f: (a: A) => RemoteData<E, B>) =>
     fold<E, A, RemoteData<E, B>>({
         onNotAsked: notAsked,
@@ -47,8 +79,19 @@ export const bind = <E, A, B>(f: (a: A) => RemoteData<E, B>) =>
         onSuccess: f
     });
 
+/**
+ * Function Alias of bind.
+ */
 export const andThen = bind
+/**
+ * Function Alias of bind.
+ */
+export const flatMap = bind
 
+/**
+ * isNotAsked accepts a `RemoteData` and returns true if the variant is `notAsked`.
+ * @param remoteData 
+ */
 export const isNotAsked = <E, A>(remoteData: RemoteData<E, A>) =>
     fold<E, A, boolean>({
         onNotAsked: () => true,
@@ -57,6 +100,10 @@ export const isNotAsked = <E, A>(remoteData: RemoteData<E, A>) =>
         onSuccess: _ => false
     })(remoteData)
 
+/**
+ * isLoading accepts a `RemoteData` and returns true if the variant is `loading`.
+ * @param remoteData 
+ */
 export const isLoading = <E, A>(remoteData: RemoteData<E, A>) =>
     fold<E, A, boolean>({
         onNotAsked: () => false,
@@ -65,6 +112,10 @@ export const isLoading = <E, A>(remoteData: RemoteData<E, A>) =>
         onSuccess: _ => false
     })(remoteData)
 
+/**
+ * isFailure accepts a `RemoteData` and returns true if the variant is `failure`.
+ * @param remoteData 
+ */
 export const isFailure = <E, A>(remoteData: RemoteData<E, A>) =>
     fold<E, A, boolean>({
         onNotAsked: () => false,
@@ -73,6 +124,10 @@ export const isFailure = <E, A>(remoteData: RemoteData<E, A>) =>
         onSuccess: _ => false
     })(remoteData)
 
+/**
+ * isSuccess accepts a `RemoteData` and returns true if the variant is `success`.
+ * @param remoteData 
+ */
 export const isSuccess = <E, A>(remoteData: RemoteData<E, A>) =>
     fold<E, A, boolean>({
         onNotAsked: () => false,
