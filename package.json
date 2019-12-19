@@ -1,0 +1,30 @@
+{
+  "name": "adt-remote-data",
+  "version": "1.0.0",
+  "description": "ADT Remote Data for Typescript",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "version": "git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ronnelreposo/adt-remote-data.git"
+  },
+  "keywords": [
+    "Remote Data",
+    "ADT",
+    "Typescript"
+  ],
+  "author": "ronnelreposo",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^3.7.3"
+  }
+}
