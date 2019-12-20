@@ -36,6 +36,7 @@ npm install adt-remote-data@1.0.0
 
 ##### fold
 **Alias:** `cata`
+
 `fold` takes four functions `onNotAsked`, `onLoading`, `onFailure`, `onSuccess` and `RemoteData` you want to reduce, This functions will be invoked upon the variant of the input `RemoteData`.
 
 ##### map
