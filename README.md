@@ -27,8 +27,10 @@ npm install adt-remote-data@1.0.0
 
 #### Constructors
 
-##### notAsked
-##### loading
+##### notAsked `deprecated` use `NotAsked` constant instead.
+##### NotAsked
+##### loading `deprecated` use `Loading` constant instead.
+##### Loading
 ##### failure
 ##### success
 
