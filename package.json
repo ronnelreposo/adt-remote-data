@@ -1,6 +1,6 @@
 {
   "name": "adt-remote-data",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ADT Remote Data for Typescript",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
