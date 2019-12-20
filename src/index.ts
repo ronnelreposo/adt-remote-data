@@ -7,9 +7,19 @@ export type RemoteData<E, A> = { readonly type: "NotAsked"; }
     | { readonly type: "Failure"; readonly value: E; }
     | { readonly type: "Success"; readonly value: A; };
 
+/**
+ * @deprecated Use `NotAsked` instead.
+ */
 export const notAsked = <E, A>(): RemoteData<E, A> => ({ type: "NotAsked" });
 
+export const NotAsked: RemoteData<never, never> = ({ type: "NotAsked" });
+
+/**
+ * @deprecated Use `Loading` instead.
+ */
 export const loading = <E, A>(): RemoteData<E, A> => ({ type: "Loading" });
+
+export const Loading: RemoteData<never, never> = ({ type: "Loading" });
 
 export const failure = <E, A>(value: E): RemoteData<E, A> => ({ type: "Failure", value })
 
@@ -46,8 +56,8 @@ export const cata = fold;
  */
 export const map = <E, A, B>(f: (a: A) => B) =>
     fold<E, A, RemoteData<E, B>>({
-        onNotAsked: notAsked,
-        onLoading: loading,
+        onNotAsked: () => NotAsked,
+        onLoading: () => Loading,
         onFailure: failure,
         onSuccess: value => success(f(value))
     });
@@ -61,8 +71,8 @@ export const bimap = <E, F, A, B>(
     onError: (e: E) => F,
     onSuccess: (a: A) => B) =>
     fold<E, A, RemoteData<F, B>>({
-        onNotAsked: notAsked,
-        onLoading: loading,
+        onNotAsked: () => NotAsked,
+        onLoading: () => Loading,
         onFailure: value => failure(onError(value)),
         onSuccess: value => success(onSuccess(value))
     });
@@ -73,8 +83,8 @@ export const bimap = <E, F, A, B>(
  */
 export const bind = <E, A, B>(f: (a: A) => RemoteData<E, B>) =>
     fold<E, A, RemoteData<E, B>>({
-        onNotAsked: notAsked,
-        onLoading: loading,
+        onNotAsked: () => NotAsked,
+        onLoading: () => Loading,
         onFailure: failure,
         onSuccess: f
     });
