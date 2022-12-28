@@ -65,7 +65,7 @@ npm install adt-remote-data@1.0.0
 `isSuccess` accepts a `RemoteData` and returns true if the variant is `success`.
 
 ## Support
-Let know what you think email me at ronnel.reposo@gmail.com
+Let know what you think email me at 00swampy.combs@icloud.com
 
 ## Author
 Written and maintained Ronnel Reposo [ronnelreposo](https://github.com/ronnelreposo)
