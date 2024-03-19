@@ -8,7 +8,7 @@
     "build": "tsc",
     "test": "jest --watchAll",
     "test:ci": "jest",
-    "prepare": "npm run build && npm run test",
+    "prepare": "npm run build && npm run test:ci",
     "version": "git add -A src",
     "postversion": "git push && git push --tags"
   },
