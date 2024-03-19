@@ -10,7 +10,7 @@ in
     packages = [
       pkgs.which
       pkgs.vscode # export NIXPKGS_ALLOW_UNFREE=1
-      pkgs.nodejs_21
+      pkgs.nodejs_20
     ];
     
     # Shell environments
