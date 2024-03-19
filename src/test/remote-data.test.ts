@@ -21,7 +21,7 @@ const id2 = (x: number) => identity(x);
 describe('Not Asked', () => {
     it('should be `not asked`', () => expect(isNotAsked(NotAsked)).toEqual(true))
     it('should return not asked variant.', () => {
-        expect(NotAsked.type).toEqual('NotAsked ');
+        expect(NotAsked.type).toEqual('NotAsked');
     })
 })
 
