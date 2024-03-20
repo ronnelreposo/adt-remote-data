@@ -64,6 +64,18 @@ npm install adt-remote-data@2.0.0
 ##### isSuccess
 `isSuccess` accepts a `RemoteData` and returns true if the variant is `success`.
 
+## Developing
+
+Node version can be found in `shell.nix`
+Login npm: `npm login`
+
+Create a new release: Either
+For patch: `npm version patch`
+For minor: `npm version minor`
+For major: `npm version major`
+After that, publish to npm: `npm publish`
+
+Logout npm: `npm logout`
 
 ## Testing
 
