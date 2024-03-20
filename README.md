@@ -20,7 +20,7 @@ Full detailed documentation can be found [here](https://github.com/ronnelreposo/
 npm install adt-remote-data --save
 
 # or to install a specific version
-npm install adt-remote-data@1.0.0
+npm install adt-remote-data@2.0.0
 ```
 
 ## Contents
