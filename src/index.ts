@@ -2,10 +2,11 @@
 /**
  * Represents a variant for Remote Data.
  */
-export type RemoteData<E, A> = { readonly type: "NotAsked"; }
-    | { readonly type: "Loading"; }
-    | { readonly type: "Failure"; readonly value: E; }
-    | { readonly type: "Success"; readonly value: A; };
+export type RemoteData<E, A> = Readonly<{ type: "NotAsked"; }
+    | { type: "Loading"; }
+    | { type: "Failure"; value: E; }
+    | { type: "Success"; value: A; }>;
+
 
 /**
  * @deprecated Use `NotAsked` instead.
