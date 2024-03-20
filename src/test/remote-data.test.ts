@@ -1,11 +1,9 @@
 
-// import { RemoteData, bimap } from '../index';
+import { identity } from 'lodash';
 import { NotAsked, Loading, success, failure
        , fold, map, bimap, bind
        , isNotAsked, isLoading, isFailure, isSuccess
        } from '../index';
-import { expect } from 'chai';
-import _ = require('lodash');
 
 const successRd = success(1);
 const failureRd = failure(1);
@@ -17,34 +15,34 @@ const toString = (x: number): string => x.toString()
 const incToString = (x: number): string => toString(inc(x))
 const toString_ = (x: string): string => x.toString() + '_'
 
-const id1 = (x: string) => _.identity(x);
-const id2 = (x: number) => _.identity(x);
+const id1 = (x: string) => identity(x);
+const id2 = (x: number) => identity(x);
 
 describe('Not Asked', () => {
-    it('should be `not asked`', () => expect(isNotAsked(NotAsked)).equal(true))
+    it('should be `not asked`', () => expect(isNotAsked(NotAsked)).toEqual(true))
     it('should return not asked variant.', () => {
-        expect(NotAsked.type).to.equal('NotAsked');
+        expect(NotAsked.type).toEqual('NotAsked');
     })
 })
 
 describe('Loading', () => {
-    it('should be `loading`', () => expect(isLoading(Loading)).equal(true))
+    it('should be `loading`', () => expect(isLoading(Loading)).toEqual(true))
     it('should return loading variant.', () => {
-        expect(Loading.type).to.equal('Loading');
+        expect(Loading.type).toEqual('Loading');
     })
 })
 
 describe('Success', () => {
-    it('should be `success`', () => expect(isSuccess(successRd)).equal(true))
+    it('should be `success`', () => expect(isSuccess(successRd)).toEqual(true))
     it('should return success variant.', () => {
-        expect(successRd.type).to.equal('Success');
+        expect(successRd.type).toEqual('Success');
     })
 })
 
 describe('Failure', () => {
-    it('should be `failure`', () => expect(isFailure(failureRd)).equal(true))
+    it('should be `failure`', () => expect(isFailure(failureRd)).toEqual(true))
     it('should return failure variant.', () => {
-        expect(failureRd.type).to.equal('Failure');
+        expect(failureRd.type).toEqual('Failure');
     })
 })
 
@@ -58,54 +56,54 @@ describe('fold operator', () => {
 
     it('should fold on not asked.', () => {
         const notAskedFoldedValue = fFold(NotAsked);
-        expect(notAskedFoldedValue).to.equal('not asked');
+        expect(notAskedFoldedValue).toEqual('not asked');
     })
 
     it('should fold on loading.', () => {
         const loadingFoldedValue = fFold(Loading);
-        expect(loadingFoldedValue).to.equal('loading');
+        expect(loadingFoldedValue).toEqual('loading');
     })
 
     it('should fold on failed.', () => {
         const failedFoldedValue = fFold(failureRd);
-        expect(failedFoldedValue).to.equal('failed');
+        expect(failedFoldedValue).toEqual('failed');
     })
     
     it('should fold on success.', () => {
         const successFoldedValue = fFold(successRd);
-        expect(successFoldedValue).to.equal('success');
+        expect(successFoldedValue).toEqual('success');
     })
 })
 
 describe('map operator', () => {
 
     it('must preserve identity.', () => {
-        const mappedRd = map((x: number) => _.identity(x))(successRd)
-        expect(mappedRd.type).equal('Success');
+        const mappedRd = map((x: number) => identity(x))(successRd)
+        expect(mappedRd.type).toEqual('Success');
         expect(
             fold({ onNotAsked: () => undefined
                  , onLoading: () => undefined
-                 , onFailure: x => _.identity(x)
-                 , onSuccess: x => _.identity(x) 
+                 , onFailure: x => identity(x)
+                 , onSuccess: x => identity(x) 
             })(mappedRd)
-        ).equal(1)
+        ).toEqual(1)
     })
     it('must preserve composition.', () => {
         const mappedRd = map(incToString)(successRd)
         const incRd = map((x: number) => inc(x))(successRd)
         const incToStringRd = map((x: number) => toString(x))(incRd)
-        expect(mappedRd.type).equal(incToStringRd.type);
+        expect(mappedRd.type).toEqual(incToStringRd.type);
         expect(
             fold({ onNotAsked: () => undefined
                  , onLoading: () => undefined
                  , onFailure: _ => undefined
-                 , onSuccess: x => _.identity(x)
+                 , onSuccess: x => identity(x)
             })(mappedRd)
-        ).equal(
+        ).toEqual(
             fold({ onNotAsked: () => undefined
                  , onLoading: () => undefined
                  , onFailure: _ => undefined
-                 , onSuccess: x => _.identity(x)
+                 , onSuccess: x => identity(x)
             })(incToStringRd)
         )
     })
@@ -116,22 +114,22 @@ describe('bimap operator', () => {
     it('must preserve identity.', () => {
         const bimapOnFailureRd = bimap(id1, id2)(failureRd2);
         const bimapOnSuccessRd = bimap(id1, id2)(successRd2);
-        expect(bimapOnFailureRd.type).equal('Failure');
-        expect(bimapOnSuccessRd.type).equal('Success');
+        expect(bimapOnFailureRd.type).toEqual('Failure');
+        expect(bimapOnSuccessRd.type).toEqual('Success');
         expect(
             fold({ onNotAsked: () => undefined
                  , onLoading: () => undefined
-                 , onFailure: x => _.identity(x)
-                 , onSuccess: x => _.identity(x)
+                 , onFailure: x => identity(x)
+                 , onSuccess: x => identity(x)
             })(bimapOnFailureRd)
-        ).equal('failed')
+        ).toEqual('failed')
         expect(
             fold({ onNotAsked: () => undefined
                  , onLoading: () => undefined
-                 , onFailure: x => _.identity(x)
-                 , onSuccess: x => _.identity(x) 
+                 , onFailure: x => identity(x)
+                 , onSuccess: x => identity(x) 
             })(bimapOnSuccessRd)
-        ).equal(1)
+        ).toEqual(1)
     })
     it('must preserve composition.', () => {
         const bimapOnFailureRd = bimap((x: string) => toString_(toString_(x)), incToString)(failureRd2);
@@ -139,15 +137,15 @@ describe('bimap operator', () => {
         expect(
             fold({ onNotAsked: () => undefined
                  , onLoading: () => undefined
-                 , onFailure: x => _.identity(x)
-                 , onSuccess: x => _.identity(x)
+                 , onFailure: x => identity(x)
+                 , onSuccess: x => identity(x)
             })(bimapOnFailureRd)
-        ).equal(toString_(toString_('failed')))
+        ).toEqual(toString_(toString_('failed')))
         expect(
             fold({ onNotAsked: () => undefined
                  , onLoading: () => undefined
-                 , onFailure: x => _.identity(x)
-                 , onSuccess: x => _.identity(x)
+                 , onFailure: x => identity(x)
+                 , onSuccess: x => identity(x)
             })(bimapOnSuccessRd)
         )
     })
@@ -173,21 +171,21 @@ describe('bind operator', () => {
             fold({ onNotAsked: () => undefined
                 , onLoading: () => undefined
                 , onFailure: _ => undefined
-                , onSuccess: x => _.identity(x)
+                , onSuccess: x => identity(x)
             })(sumRd)
-        ).equal(expectedResult)
+        ).toEqual(expectedResult)
     })
 
     it('monad laws: left identity', () => {
-        const f = _.identity
+        const f = identity
         const m = bind((x: number) => of(f(x)))(successRd)
         expect(
             fold({ onNotAsked: () => undefined
                 , onLoading: () => undefined
                 , onFailure: _ => undefined
-                , onSuccess: x => _.identity(x)
+                , onSuccess: x => identity(x)
             })(m)
-        ).equal(1)
+        ).toEqual(1)
     })
 
     it('monad laws: right identity', () => {
@@ -196,9 +194,9 @@ describe('bind operator', () => {
             fold({ onNotAsked: () => undefined
                 , onLoading: () => undefined
                 , onFailure: _ => undefined
-                , onSuccess: x => _.identity(x)
+                , onSuccess: x => identity(x)
             })(m)
-        ).equal(1)
+        ).toEqual(1)
     })
 
     it('monad laws: associativity', () => {
@@ -210,15 +208,15 @@ describe('bind operator', () => {
             fold({ onNotAsked: () => undefined
                 , onLoading: () => undefined
                 , onFailure: _ => undefined
-                , onSuccess: x => _.identity(x)
+                , onSuccess: x => identity(x)
             })(m2)
-        ).equal(expectedResult)
+        ).toEqual(expectedResult)
         expect(
             fold({ onNotAsked: () => undefined
                 , onLoading: () => undefined
                 , onFailure: _ => undefined
-                , onSuccess: x => _.identity(x)
+                , onSuccess: x => identity(x)
             })(m)
-        ).equal(expectedResult)
+        ).toEqual(expectedResult)
     })
 })

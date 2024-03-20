@@ -1,29 +1,28 @@
 
+// Brand type. https://egghead.io/blog/using-branded-types-in-typescript
+declare const __brand: unique symbol;
+type Brand<B> = { readonly [__brand]: B };
+type Branded<T, B> = T & Brand<B>;
+
+
+type NotAsked = Branded<Readonly<{ type: "NotAsked"; }>, "remote-data">;
+type Loading = Branded<Readonly<{ type: "Loading"; }>, "remote-data">;
+type Failure<E> = Branded<Readonly<{ type: "Failure"; value: E; }>, "remote-data">;
+type Success<A> = Branded<Readonly<{ type: "Success"; value: A; }>, "remote-data">;
 /**
  * Represents a variant for Remote Data.
  */
-export type RemoteData<E, A> = { readonly type: "NotAsked"; }
-    | { readonly type: "Loading"; }
-    | { readonly type: "Failure"; readonly value: E; }
-    | { readonly type: "Success"; readonly value: A; };
+export type RemoteData<E, A> = NotAsked | Loading | Failure<E> | Success<A>;
 
-/**
- * @deprecated Use `NotAsked` instead.
- */
-export const notAsked = <E, A>(): RemoteData<E, A> => ({ type: "NotAsked" });
+// Type Constructors.
 
-export const NotAsked: RemoteData<never, never> = ({ type: "NotAsked" });
+export const NotAsked: RemoteData<never, never> = { type: "NotAsked" } as NotAsked;
 
-/**
- * @deprecated Use `Loading` instead.
- */
-export const loading = <E, A>(): RemoteData<E, A> => ({ type: "Loading" });
+export const Loading: RemoteData<never, never> = ({ type: "Loading" }) as Loading;
 
-export const Loading: RemoteData<never, never> = ({ type: "Loading" });
+export const failure = <E, A>(value: E): RemoteData<E, A> => ({ type: "Failure", value }) as Failure<E>;
 
-export const failure = <E, A>(value: E): RemoteData<E, A> => ({ type: "Failure", value })
-
-export const success = <E, A>(value: A): RemoteData<E, A> => ({ type: "Success", value })
+export const success = <E, A>(value: A): RemoteData<E, A> => ({ type: "Success", value }) as Success<A>;
 
 /**
  * fold takes four functions `onNotAsked`, `onLoading`, `onFailure`, `onSuccess` and `RemoteData` you want to reduce, This functions will be invoked upon the variant of the input `RemoteData`.
@@ -42,7 +41,6 @@ export const fold = <E, A, R>(handlers: {
             case "Failure": return handlers.onFailure(remoteData.value);
             case "Success": return handlers.onSuccess(remoteData.value);
         }
-        ;
     }
 
 /**

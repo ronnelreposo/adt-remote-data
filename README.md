@@ -1,5 +1,7 @@
 # Remote Data for Typescript
 
+[![Test](https://github.com/ronnelreposo/adt-remote-data/actions/workflows/test.yml/badge.svg?branch=test)](https://github.com/ronnelreposo/adt-remote-data/actions/workflows/test.yml)
+
 ## Introduction
 
 Remote Data is an Abstract Data Type (ADT) for respresenting data from remote sources.
@@ -27,9 +29,7 @@ npm install adt-remote-data@1.0.0
 
 #### Constructors
 
-##### notAsked `deprecated` use `NotAsked` constant instead.
 ##### NotAsked
-##### loading `deprecated` use `Loading` constant instead.
 ##### Loading
 ##### failure
 ##### success
