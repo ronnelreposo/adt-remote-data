@@ -1,89 +1,192 @@
-# Remote Data for Typescript
+# Remote Data for TypeScript
 
 [![Test](https://github.com/ronnelreposo/adt-remote-data/actions/workflows/test.yml/badge.svg?branch=test)](https://github.com/ronnelreposo/adt-remote-data/actions/workflows/test.yml)
 
-## Introduction
+A TypeScript implementation of the **RemoteData** pattern for representing data requested from a remote source.
 
-Remote Data is an Abstract Data Type (ADT) for respresenting data from remote sources.
+A request can be in several distinct states: it may not have started, it may be loading, it may have failed, or it may have succeeded. `RemoteData` represents those states as a single type, making it easier to handle them explicitly in application code.
 
-This library is inspired by those that have come before, especially the [remotedata](https://github.com/krisajenkins/remotedata) project.
-
-## Documentation
-
-Full detailed documentation can be found [here](https://github.com/ronnelreposo/adt-remote-data/blob/master/README.md)
+This library is inspired by projects that came before it, especially [krisajenkins/remotedata](https://github.com/krisajenkins/remotedata).
 
 ## Installation
 
-### NPM
+Install from npm:
 
-```bash
+```sh
 npm install adt-remote-data --save
+```
 
-# or to install a specific version
+To install a specific version:
+
+```sh
 npm install adt-remote-data@2.0.0
 ```
 
-## Contents
+## RemoteData states
 
-### RemoteData
+`RemoteData<E, A>` represents one of four states:
 
-#### Constructors
+| State | Meaning |
+| --- | --- |
+| `NotAsked` | The request has not started. |
+| `Loading` | The request is in progress. |
+| `Failure<E>` | The request failed and contains an error value. |
+| `Success<A>` | The request succeeded and contains a result value. |
 
-##### NotAsked
-##### Loading
-##### failure
-##### success
+The application is responsible for making requests and transitioning between states. The library provides the type and functions for working with those states.
 
-#### Methods
+## Example
 
-##### fold
+```ts
+import {
+  fold,
+  success,
+  type RemoteData,
+} from 'adt-remote-data';
+
+type User = {
+  name: string;
+};
+
+const user: RemoteData<string, User> = success({
+  name: 'Ronnel',
+});
+
+const message = fold<string, User, string>({
+  onNotAsked: () => 'Request not started',
+  onLoading: () => 'Loading…',
+  onFailure: error => `Could not load user: ${error}`,
+  onSuccess: value => `Hello, ${value.name}`,
+})(user);
+```
+
+`fold` handles each possible state and produces a single result.
+
+## API
+
+### Constructors
+
+#### `NotAsked`
+
+Represents data that has not been requested.
+
+#### `Loading`
+
+Represents a request that is in progress.
+
+#### `failure`
+
+Creates a failed result containing an error value.
+
+#### `success`
+
+Creates a successful result containing a value.
+
+### Methods
+
+#### `fold`
+
 **Alias:** `cata`
 
-`fold` takes four functions `onNotAsked`, `onLoading`, `onFailure`, `onSuccess` and `RemoteData` you want to reduce, This functions will be invoked upon the variant of the input `RemoteData`.
+Handles all four states by calling the corresponding handler: `onNotAsked`, `onLoading`, `onFailure`, or `onSuccess`.
 
-##### map
-`map` takes a function and a `RemoteData`. The transformer function takes a value and returns a transformed value. The value to the function will be supplied on **success** variant in `RemoteData`.
+#### `map`
 
-##### bimap
-`bimap` takes two function `onError` and `onSuccess` and performs dual transformation of `RemoteData`.
+Transforms the value inside a successful result. The other states are preserved.
 
-##### bind
-**Alias:** `andThen`, `flatMap`
+#### `bimap`
 
-`bind` takes a function that takes a value and returns a `RemoteData`. The value to the function will be supplied on **success** variant in `RemoteData` your binding to.
+Transforms either the error value in a failure or the value in a success. `NotAsked` and `Loading` are preserved.
 
-##### isNotAsked
-`isNotAsked` accepts a `RemoteData` and returns true if the variant is `notAsked`.
+#### `bind`
 
-##### isLoading
-`isLoading` accepts a `RemoteData` and returns true if the variant is `loading`.
+**Aliases:** `andThen`, `flatMap`
 
-##### isFailure
-`isFailure` accepts a `RemoteData` and returns true if the variant is `failure`.
+Chains an operation that returns another `RemoteData`. The operation runs for a successful value; the other states are preserved.
 
-##### isSuccess
-`isSuccess` accepts a `RemoteData` and returns true if the variant is `success`.
+#### `isNotAsked`
+
+Returns whether the value is `NotAsked`.
+
+#### `isLoading`
+
+Returns whether the value is `Loading`.
+
+#### `isFailure`
+
+Returns whether the value is a failure.
+
+#### `isSuccess`
+
+Returns whether the value is a success.
 
 ## Developing
 
-Node version can be found in `shell.nix`
-Login npm: `npm login`
+The Node environment is described in `shell.nix`.
 
-Create a new release: Either
-For patch: `npm version patch`
-For minor: `npm version minor`
-For major: `npm version major`
-After that, publish to npm: `npm publish`
+Install dependencies and build:
 
-Logout npm: `npm logout`
+```sh
+npm install
+npm run build
+```
 
 ## Testing
 
-Run `npm run test`
+Run Jest in watch mode:
+
+```sh
+npm test
+```
+
+Run the test suite without watch mode:
+
+```sh
+npm run test:ci
+```
+
+The `prepare` script also builds the package and runs the non-watch test suite during installation.
+
+## Releasing
+
+Log in to npm:
+
+```sh
+npm login
+```
+
+Choose the appropriate version update:
+
+```sh
+npm version patch
+# or
+npm version minor
+# or
+npm version major
+```
+
+Then publish:
+
+```sh
+npm publish
+```
+
+When finished:
+
+```sh
+npm logout
+```
+
+The package's `postversion` script pushes commits and tags, so review the package scripts before running a release.
 
 ## Support
-Let know what you think email me at 00swampy.combs@icloud.com
+
+Feedback and suggestions are welcome. You can contact me at **00swampy.combs@icloud.com**.
 
 ## Author
-Written and maintained Ronnel Reposo [ronnelreposo](https://github.com/ronnelreposo)
 
+Written and maintained by [Ronnel Reposo](https://github.com/ronnelreposo).
+
+## License
+
+The package metadata declares the ISC license.
